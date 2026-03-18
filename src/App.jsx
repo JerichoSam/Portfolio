@@ -34,7 +34,7 @@ function App() {
 
             <div className="contact-actions">
               <a
-                href="../public/Dollano_Resume.pdf"
+                href="/Dollano_Resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="contact-btn"
