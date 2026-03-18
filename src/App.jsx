@@ -1,11 +1,26 @@
-import { useState } from 'react'
 import { CheckCircle, MapPin, FileText, Sun, Moon, ExternalLink, Github, Linkedin, Mail, Phone } from 'lucide-react'
+import emailjs from '@emailjs/browser';
+import { useState, useRef } from 'react'
 import './App.css'
 import Profile from './assets/Profile.JPG'
 import ProfileHover from './assets/sleeping.png'
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(false); // Toggle state
+  const form = useRef();
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+
+    emailjs.sendForm('service_5ws0nr9', 'template_wnhoqsb', form.current, 'bp7JCMhTAb3zw_2Nr')
+      .then(() => {
+        alert("Message sent! I'll get back to you soon.");
+        setShowContactForm(false);
+      }, (error) => {
+        alert("Failed to send: " + error.text);
+      });
+  };
 
   return (
     <div className={isDarkMode ? 'dark-wrapper dark' : 'dark-wrapper'}>
@@ -39,19 +54,47 @@ function App() {
                 rel="noopener noreferrer"
                 className="contact-btn"
                 id="resume"
-                style={{ textDecoration: 'none' }} rs
+                style={{ textDecoration: 'none' }}
               >
                 <FileText size={18} /> Resume
               </a>
-              <a
-                href="mailto:jerichosamdollano@gmail.com"
+              <button
                 className="contact-btn"
-                id="send-email"
-                style={{ textDecoration: 'none' }}
+                onClick={() => setShowContactForm(!showContactForm)}
               >
-                <Mail size={18} /> Email Me
-              </a>
+                <Mail size={18} /> {showContactForm ? "Close" : "Email Me"}
+              </button>
             </div>
+
+            {/* Conditional Modal Rendering */}
+            {showContactForm && (
+              <div className="modal-backdrop" onClick={() => setShowContactForm(false)}>
+                {/* stopPropagation prevents the modal from closing when clicking inside the form */}
+                <form
+                  ref={form}
+                  onSubmit={sendEmail}
+                  className="email-form-modal"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    type="button"
+                    className="modal-close-btn"
+                    onClick={() => setShowContactForm(false)}
+                  >
+                    ✕
+                  </button>
+
+                  <h3>Send a Message</h3>
+                  <input type="text" name="from_name" placeholder="Full Name" required />
+                  <input type="email" name="user_email" placeholder="Your Email Address" required />
+                  <textarea name="message" placeholder="How can I help you?" required />
+
+                  <button type="submit" className="send-btn">
+                    Send Message
+                  </button>
+                </form>
+              </div>
+            )}
           </div>
 
           <div className="toggle-container">
@@ -158,38 +201,38 @@ function App() {
 
       {/* FOOTER */}
       <footer className="footer-card">
-  <div className="footer-links">
-    {/* GitHub with exact logo */}
-    <a 
-      href="https://github.com/JerichoSam" 
-      target="_blank" 
-      rel="noopener noreferrer"
-    >
-      <Github size={20} /> GitHub
-    </a>
+        <div className="footer-links">
+          {/* GitHub with exact logo */}
+          <a
+            href="https://github.com/JerichoSam"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Github size={20} /> GitHub
+          </a>
 
-    {/* LinkedIn with exact logo */}
-    <a 
-      href="https://www.linkedin.com/in/jericho-sam-dollano-62265033b/" 
-      target="_blank" 
-      rel="noopener noreferrer"
-    >
-      <Linkedin size={20} /> LinkedIn
-    </a>
+          {/* LinkedIn with exact logo */}
+          <a
+            href="https://www.linkedin.com/in/jericho-sam-dollano-62265033b/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Linkedin size={20} /> LinkedIn
+          </a>
 
-    {/* Email Link */}
-    <a href="mailto:jerichosamdollano@gmail.com">
-      <Mail size={20} /> Email
-    </a>
-  </div>
+          {/* Email Link */}
+          <a href="mailto:jerichosamdollano@gmail.com">
+            <Mail size={20} /> Email
+          </a>
+        </div>
 
-  <div className="footer-bottom">
-    <p className="phone-line">
-      <Phone size={14} /> 09995865667
-    </p>
-    <p>&copy; 2026 Jericho Sam Dollano. Built with React.</p>
-  </div>
-</footer>
+        <div className="footer-bottom">
+          <p className="phone-line">
+            <Phone size={14} /> 09995865667
+          </p>
+          <p>&copy; 2026 Jericho Sam Dollano. Built with React.</p>
+        </div>
+      </footer>
     </div>
   )
 }
